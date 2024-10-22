@@ -1,11 +1,16 @@
+import { fileURLToPath } from 'url';
 import { spawn } from "child_process";
 import latestVersion from "latest-version";
 import ora from "ora";
 import chalk from "chalk";
-import path from "path";
+import path, { dirname } from "path";
 import fs from "fs";
 import inquirer from "inquirer";
 import { cssContent, tailwindConfigContent, pageContent, notFoundContent, layoutContent , dependencies } from "./contents.js";
+import { startDotAnimation } from "./components/animation.js"
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -40,6 +45,19 @@ async function askProjectQuestions() {
       choices: [
         { name: chalk.red("no"), value: false },
         { name: chalk.green("yes"), value: true },
+      ],
+      default: true, 
+    },
+    {
+      type: "list",
+      name: "Theme",
+      message: "Which color would you like to use as base color?",
+      choices: [
+        { name: chalk.red("zinc"), value: 'zinc' },
+        { name: chalk.green("neutral"), value: 'neutral' },
+        { name: chalk.green("gray"), value: 'gray' },
+        { name: chalk.green("salate"), value: 'salate' },
+        { name: chalk.green("stone"), value: 'stone' },
       ],
       default: true, 
     },
@@ -79,8 +97,9 @@ export async function setupNext(projectName) {
 
     spinner.start(chalk.blue(`Installing dependencies...`));
     for (const dep of dependencies) {
-      spinner.text = chalk.blue(`Installing ${dep}...`);
+      const animationInterval = startDotAnimation(spinner, `Installing ${dep}`);
       await runCommand('npm', ['install', dep, '--legacy-peer-deps'], { stdio: 'ignore' });
+      clearInterval(animationInterval);
     }
     spinner.stop();
     console.log(chalk.green(`🟢 Dependencies installed.`))
@@ -97,7 +116,19 @@ export async function setupNext(projectName) {
     }
 
     spinner.start(chalk.blue(`Setting up project files...`));
-    fs.writeFileSync(path.join(basePath, 'app', 'globals.css'), cssContent);
+
+    const themeFilePath = path.join(__dirname, 'theme', `${answers.Theme}.json`);
+    const themeData = JSON.parse(fs.readFileSync(themeFilePath, 'utf-8'));
+    
+    const updatedCssContent = cssContent.replace(
+      /:root {[^}]*}/,
+      `:root {${Object.entries(themeData.cssVars.light).map(([key, value]) => `--${key}: ${value};`).join(' ')}}`
+    ).replace(
+      /\.dark {[^}]*}/,
+      `.dark {${Object.entries(themeData.cssVars.dark).map(([key, value]) => `--${key}: ${value};`).join(' ')}}`
+    );
+
+    fs.writeFileSync(path.join(basePath, 'app', 'globals.css'), updatedCssContent);
     fs.writeFileSync(path.join('.', 'tailwind.config.ts'), tailwindConfigContent);
     fs.writeFileSync(path.join(basePath, 'app', 'page.tsx'), pageContent);
     fs.writeFileSync(path.join(basePath, 'app', 'layout.tsx'), layoutContent);
