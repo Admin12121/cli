@@ -88,7 +88,7 @@ export async function setupNext(projectName) {
     if (answers.useSrcDir) createNextAppArgs.push("--src-dir");
     if (answers.useAppRouter) createNextAppArgs.push("--app");
 
-    await runCommand("npx", createNextAppArgs);
+    await runCommand("npx", createNextAppArgs, { stdio: 'ignore' });
     spinner.stop();
     console.log(chalk.green(`🟢 Next.js installed.`))
 
