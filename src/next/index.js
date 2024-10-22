@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { spawn } from "child_process";
 import latestVersion from "latest-version";
 import ora from "ora";
 import chalk from "chalk";
@@ -6,9 +6,18 @@ import path from "path";
 import fs from "fs";
 import { cssContent, tailwindConfigContent, pageContent, notFoundContent, layoutContent } from "./contents.js";
 
+function runCommand(command, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const process = spawn(command, args, { stdio: 'inherit', shell: true, ...options });
 
-function runCommand(command, hideOutput = true) {
-  return execSync(command, { stdio: hideOutput ? 'pipe' : 'inherit' });
+    process.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Command failed with exit code ${code}`));
+      } else {
+        resolve();
+      }
+    });
+  });
 }
 
 export async function setupNext(projectName) {
@@ -16,14 +25,11 @@ export async function setupNext(projectName) {
   try {
     const nextVersion = await latestVersion("next");
 
-    // Start installing Next.js
-    spinner.start(chalk.blue(`Installing Next.js ${nextVersion}...`));
-    runCommand(`npx create-next-app@latest ${projectName} --ts --silent`, false);
+    // Allow user interaction for create-next-app
+    console.log(chalk.blue(`Installing Next.js ${nextVersion}...`));
+    await runCommand('npx', ['create-next-app@latest', projectName, '--ts']);
     process.chdir(projectName);
-    spinner.succeed(chalk.green(`🟢 Next.js installed.`));
-
-    // Start installing dependencies
-    spinner.start(chalk.blue(`Installing dependencies...`));
+    console.log(chalk.green(`🟢 Next.js installed.`));
 
     const dependencies = [
       "@hookform/error-message",
@@ -82,21 +88,24 @@ export async function setupNext(projectName) {
       "tailwindcss-animate",
       "vaul",
       "zod",
-    ].join(" ");
+    ];
 
-    runCommand(`npm install ${dependencies} --legacy-peer-deps --silent`);
+    spinner.start(chalk.blue(`Installing dependencies...`));
+    for (const dep of dependencies) {
+      spinner.text = chalk.blue(`Installing ${dep}...`);
+      await runCommand('npm', ['install', dep, '--legacy-peer-deps'], { stdio: 'ignore' });
+    }
     spinner.succeed(chalk.green(`🟢 Dependencies installed.`));
 
     const useSrc = fs.existsSync("src");
-    const basePath = useSrc ?  "src" : ".";
+    const basePath = useSrc ? "src" : ".";
 
-    // Start downloading components
-    spinner.start(chalk.blue(`Downloading components...`));
     const directories = ["components", "constants", "hooks", "icons", "lib", "schemas"];
-    directories.forEach(dir => {
-      runCommand(`degit Admin12121/Starter-Package/package/next-package/src/${dir} ${path.join(basePath, dir)}`);
-      console.log(chalk.green(`🟢 ${dir} downloaded.`));
-    });
+    for (const dir of directories) {
+      spinner.start(chalk.blue(`Downloading ${dir}...`));
+      await runCommand('degit', [`Admin12121/Starter-Package/package/next-package/src/${dir}`, path.join(basePath, dir)], { stdio: 'ignore' });
+      spinner.succeed(chalk.green(`🟢 ${dir} downloaded.`));
+    }
 
     // Set up project files
     spinner.start(chalk.blue(`Setting up project files...`));

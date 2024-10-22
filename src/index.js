@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import ora from 'ora';
-import chalk from 'chalk';
 import inquirer from "inquirer";
 import { setupNext } from "./next/index.js";
 import { setupReact } from "./react/index.js";
 
 process.removeAllListeners('warning');
+process.on('warning', (e) => { if (e.name === 'ExperimentalWarning') return; console.warn(e); });
+
 
 const promptUser = async () => {
   const questions = [
@@ -33,8 +33,6 @@ const promptUser = async () => {
 (async () => {
   try {
     const { projectName, framework } = await promptUser();
-    const spinner = ora();
-
     if (framework === "next") {
       await setupNext(projectName);
     } else if (framework === "react") {
