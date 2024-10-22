@@ -1,23 +1,30 @@
-// next.ts
 import { execSync } from "child_process";
 import latestVersion from "latest-version";
-import { cssContent, tailwindConfigContent, pageContent, notFoundContent, layoutContent } from "./contents.js"
+import ora from "ora";
+import chalk from "chalk";
 import path from "path";
 import fs from "fs";
+import { cssContent, tailwindConfigContent, pageContent, notFoundContent, layoutContent } from "./contents.js";
+
+
+function runCommand(command, hideOutput = true) {
+  return execSync(command, { stdio: hideOutput ? 'pipe' : 'inherit' });
+}
 
 export async function setupNext(projectName) {
+  const spinner = ora();
   try {
-    // Get the latest version of Next.js
     const nextVersion = await latestVersion("next");
-    console.log(`Installing Next.js ${nextVersion}...`);
 
-    // Initialize the Next.js project with user-provided name
-    execSync(`npx create-next-app@latest ${projectName} --ts`, { stdio: "inherit" });
-
-    // Change directory to the new project
+    // Start installing Next.js
+    spinner.start(chalk.blue(`Installing Next.js ${nextVersion}...`));
+    runCommand(`npx create-next-app@latest ${projectName} --ts --silent`, false);
     process.chdir(projectName);
+    spinner.succeed(chalk.green(`🟢 Next.js installed.`));
 
-    // Define dependencies to install
+    // Start installing dependencies
+    spinner.start(chalk.blue(`Installing dependencies...`));
+
     const dependencies = [
       "@hookform/error-message",
       "@hookform/resolvers",
@@ -64,9 +71,7 @@ export async function setupNext(projectName) {
       "next-auth",
       "next-themes",
       "novel",
-      "react",
       "react-day-picker",
-      "react-dom",
       "react-hook-form",
       "react-resizable-panels",
       "recharts",
@@ -79,60 +84,32 @@ export async function setupNext(projectName) {
       "zod",
     ].join(" ");
 
-    // Install dependencies
-    console.log("Installing dependencies...");
-    execSync(`npm install ${dependencies}`, { stdio: "inherit" });
-
-    // Install dev dependencies
-    const devDependencies = [
-      "@types/node",
-      "@types/react",
-      "@types/react-dom",
-      "eslint",
-      "eslint-config-next",
-      "postcss",
-      "tailwindcss",
-      "typescript",
-    ].join(" ");
-
-    console.log("Installing dev dependencies...");
-    execSync(`npm install --save-dev ${devDependencies}`, { stdio: "inherit" });
+    runCommand(`npm install ${dependencies} --legacy-peer-deps --silent`);
+    spinner.succeed(chalk.green(`🟢 Dependencies installed.`));
 
     const useSrc = fs.existsSync("src");
-
-    // Define the base path for downloading components
     const basePath = useSrc ?  "src" : ".";
 
-    // Download components, constants, hooks, icons, lib, schemas
+    // Start downloading components
+    spinner.start(chalk.blue(`Downloading components...`));
     const directories = ["components", "constants", "hooks", "icons", "lib", "schemas"];
     directories.forEach(dir => {
-      console.log(`Downloading ${dir}...`);
-      execSync(`degit Admin12121/Starter-Package/package/next-package/src/${dir} ${path.join(basePath, dir)}`, { stdio: "inherit" });
+      runCommand(`degit Admin12121/Starter-Package/package/next-package/src/${dir} ${path.join(basePath, dir)}`);
+      console.log(chalk.green(`🟢 ${dir} downloaded.`));
     });
 
-    const globalsCssPath = path.join(basePath, 'app', 'globals.css');
-    fs.writeFileSync(globalsCssPath, cssContent, 'utf8');
-    console.log(`Updated ${globalsCssPath} with new styles.`);
+    // Set up project files
+    spinner.start(chalk.blue(`Setting up project files...`));
+    fs.writeFileSync(path.join(basePath, 'app', 'globals.css'), cssContent);
+    fs.writeFileSync(path.join('.', 'tailwind.config.ts'), tailwindConfigContent);
+    fs.writeFileSync(path.join(basePath, 'app', 'page.tsx'), pageContent);
+    fs.writeFileSync(path.join(basePath, 'app', 'layout.tsx'), layoutContent);
+    fs.writeFileSync(path.join(basePath, 'app', 'not-found.tsx'), notFoundContent);
 
-    // Write the Tailwind CSS configuration to tailwind.config.ts
-    const tailwindConfigPath = path.join('.', 'tailwind.config.ts');
-    fs.writeFileSync(tailwindConfigPath, tailwindConfigContent, 'utf8');
-    console.log(`Updated ${tailwindConfigPath} with new Tailwind CSS configuration.`);
-
-    const pagePath = path.join(basePath, 'app', 'page.tsx');
-    fs.writeFileSync(pagePath, pageContent, 'utf8');
-    console.log(`Updated ${pagePath}`);
-
-    const layoutPath = path.join(basePath, 'app', 'layout.tsx');
-    fs.writeFileSync(layoutPath, layoutContent, 'utf8');
-    console.log(`Updated ${layoutPath}`);
-
-    const notFountPath = path.join(basePath, 'app');
-    fs.writeFileSync(path.join(notFountPath, 'not-found.tsx'), notFoundContent, 'utf8');
-    console.log(`Added ${notFountPath}`);
-
-    console.log(`Setup complete! Run 'cd ${projectName} && npm run dev' to start.`);
+    spinner.succeed(chalk.green(`🟢 Project setup complete.`));
+    console.log(`- cd ${projectName}`);
+    console.log(`- npm run dev`);
   } catch (error) {
-    console.error("An error occurred:", error.message);
+    spinner.fail(chalk.red(`🔴 An error occurred: ${error.message}`));
   }
 }

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-
-import { execSync } from "child_process";
-import latestVersion from "latest-version";
+import ora from 'ora';
+import chalk from 'chalk';
 import inquirer from "inquirer";
 import { setupNext } from "./next/index.js";
 import { setupReact } from "./react/index.js";
+
+process.removeAllListeners('warning');
 
 const promptUser = async () => {
   const questions = [
@@ -12,6 +13,7 @@ const promptUser = async () => {
       type: 'input',
       name: 'projectName',
       message: 'Enter your project name:',
+      default: 'my-project',
       validate: (input) => input ? true : 'Project name cannot be empty.',
     },
     {
@@ -31,6 +33,7 @@ const promptUser = async () => {
 (async () => {
   try {
     const { projectName, framework } = await promptUser();
+    const spinner = ora();
 
     if (framework === "next") {
       await setupNext(projectName);
@@ -38,6 +41,6 @@ const promptUser = async () => {
       await setupReact(projectName);
     }
   } catch (error) {
-    console.error("An error occurred:", error.message);
+    console.error("🔴 An error occurred:", error.message);
   }
 })();
