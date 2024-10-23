@@ -47,20 +47,38 @@ async function askProjectQuestions() {
 }
 
 
-export async function setupReact(projectName) {
+export async function setupReact({ projectName = 'my-project', continueSetup = false }) {
   const spinner = ora();
   try {
-    const answers = await askProjectQuestions();
-
-    spinner.start(chalk.blue(`creating react project`));
-    const createReactAppArgs = [`create-vite@latest`, projectName, `--template react-swc-ts`];
-    await runCommand("npx", createReactAppArgs, { stdio: 'ignore' });
-    spinner.stop();
-    spinner.start(chalk.blue('installing react'));
-    process.chdir(projectName);
-    await runCommand("npm", ['i'], { stdio: 'ignore' });
-    spinner.stop();
-    console.log(chalk.green(`🟢 react installed.`))
+    if(!continueSetup){
+      const answers = await askProjectQuestions();
+  
+      spinner.start(chalk.blue(`creating react project`));
+      const createReactAppArgs = [`create-vite@latest`, projectName, `--template react-swc-ts`];
+      await runCommand("npx", createReactAppArgs, { stdio: 'ignore' });
+      spinner.stop();
+      spinner.start(chalk.blue('installing react'));
+      process.chdir(projectName);
+      await runCommand("npm", ['i'], { stdio: 'ignore' });
+      spinner.stop();
+      console.log(chalk.green(`🟢 react installed.`))
+    }else{
+      answers = await inquirer.prompt([
+        {
+          type: "list",
+          name: "Theme",
+          message: "Which color would you like to use as base color?",
+          choices: [
+            { name: chalk.red("zinc"), value: 'zinc' },
+            { name: chalk.green("neutral"), value: 'neutral' },
+            { name: chalk.green("gray"), value: 'gray' },
+            { name: chalk.green("salate"), value: 'salate' },
+            { name: chalk.green("stone"), value: 'stone' },
+          ],
+          default: true, 
+        },
+      ]);
+    }
 
     spinner.start(chalk.blue(`Installing dependencies...`));
     for (const dep of dependencies) {

@@ -71,7 +71,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    /* // @apply border-border; */
   }
   body {
     @apply bg-background text-foreground;
@@ -230,15 +230,22 @@ body {
 `;
 
 
-export const tailwindConfigContent = `
+export function getTailwindConfig(useSrcDir) {
+  return `
 import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    ${useSrcDir ? 
+      `"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",    
+      "./src/components/**/*.{js,ts,jsx,tsx,mdx}",    
+      "./src/app/**/*.{js,ts,jsx,tsx,mdx}",` 
+      : 
+      `"./pages/**/*.{js,ts,jsx,tsx,mdx}",    
+      "./components/**/*.{js,ts,jsx,tsx,mdx}",    
+      "./app/**/*.{js,ts,jsx,tsx,mdx}",`
+    }
   ],
   theme: {
     container: {
@@ -345,6 +352,7 @@ const config: Config = {
 };
 export default config;
 `;
+}
 
 
 export const pageContent = `

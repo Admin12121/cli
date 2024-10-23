@@ -6,7 +6,7 @@ import chalk from "chalk";
 import path, { dirname } from "path";
 import fs from "fs";
 import inquirer from "inquirer";
-import { cssContent, tailwindConfigContent, pageContent, notFoundContent, layoutContent , dependencies } from "./contents.js";
+import { cssContent, getTailwindConfig, pageContent, notFoundContent, layoutContent , dependencies } from "./contents.js";
 import { startDotAnimation } from "./components/animation.js"
 
 const __filename = fileURLToPath(import.meta.url);
@@ -37,6 +37,7 @@ async function askProjectQuestions() {
         { name: chalk.green("yes"), value: true },
       ],
       default: true,
+      prefix: '🔵',
     },
     {
       type: "list",
@@ -47,6 +48,7 @@ async function askProjectQuestions() {
         { name: chalk.green("yes"), value: true },
       ],
       default: true, 
+      prefix: '🔵',
     },
     {
       type: "list",
@@ -60,6 +62,7 @@ async function askProjectQuestions() {
         { name: chalk.green("stone"), value: 'stone' },
       ],
       default: true, 
+      prefix: '🔵',
     },
   ]);
 
@@ -68,32 +71,51 @@ async function askProjectQuestions() {
 }
 
 
-export async function setupNext(projectName) {
+export async function setupNext({ projectName , continueSetup }) {
   const spinner = ora();
+  let answers;
   try {
-    const nextVersion = await latestVersion("next");
-    const answers = await askProjectQuestions();
+    if (!continueSetup) {
+      const nextVersion = await latestVersion("next");
+      answers = await askProjectQuestions();
+      spinner.start(chalk.blue(`Installing Next.js...`));
+      const createNextAppArgs = [
+        `create-next-app@${nextVersion}`,
+        projectName,
+        "--ts",
+        "--eslint",
+        "--turbopack",
+        "--no-import-alias",
+      ];
 
-    spinner.start(chalk.blue(`Installing Next.js ${nextVersion}...`));
-    const createNextAppArgs = [
-      "create-next-app@latest",
-      projectName,
-      "--ts",
-      "--no-eslint",
-      "--no-turbo",
-      "--no-import-alias",
-    ];
+      if (answers.useTailwind) createNextAppArgs.push("--tailwind");
+      if (answers.useSrcDir) createNextAppArgs.push("--src-dir");
+      if (answers.useAppRouter) createNextAppArgs.push("--app");
 
-    if (answers.useTailwind) createNextAppArgs.push("--tailwind");
-    if (answers.useSrcDir) createNextAppArgs.push("--src-dir");
-    if (answers.useAppRouter) createNextAppArgs.push("--app");
+      await runCommand("npx", createNextAppArgs, { stdio: 'ignore' });
+      spinner.stop();
+      console.log(chalk.green(`🟢 Next.js installed.`))
 
-    await runCommand("npx", createNextAppArgs, { stdio: 'ignore' });
-    spinner.stop();
-    console.log(chalk.green(`🟢 Next.js installed.`))
-
-    process.chdir(projectName);
-    spinner.start(chalk.blue(`Installing additional dependencies...`));
+      process.chdir(projectName);
+    } else{
+      const useSrc = fs.existsSync("src");
+      answers = await inquirer.prompt([
+        {
+          type: "list",
+          name: "Theme",
+          message: "Which color would you like to use as base color?",
+          choices: [
+            { name: chalk.red("zinc"), value: 'zinc' },
+            { name: chalk.green("neutral"), value: 'neutral' },
+            { name: chalk.green("gray"), value: 'gray' },
+            { name: chalk.green("salate"), value: 'salate' },
+            { name: chalk.green("stone"), value: 'stone' },
+          ],
+          default: true, 
+        },
+      ]);
+      answers.useSrcDir = useSrc; 
+    }
 
     spinner.start(chalk.blue(`Installing dependencies...`));
     for (const dep of dependencies) {
@@ -129,15 +151,18 @@ export async function setupNext(projectName) {
     );
 
     fs.writeFileSync(path.join(basePath, 'app', 'globals.css'), updatedCssContent);
-    fs.writeFileSync(path.join('.', 'tailwind.config.ts'), tailwindConfigContent);
-    fs.writeFileSync(path.join(basePath, 'app', 'page.tsx'), pageContent);
+    const tailwindConfigContentUpdated = getTailwindConfig(answers.useSrcDir);
+    fs.writeFileSync(path.join('.', 'tailwind.config.ts'), tailwindConfigContentUpdated);
+    // fs.writeFileSync(path.join(basePath, 'app', 'page.tsx'), pageContent);
     fs.writeFileSync(path.join(basePath, 'app', 'layout.tsx'), layoutContent);
     fs.writeFileSync(path.join(basePath, 'app', 'not-found.tsx'), notFoundContent);
 
     spinner.stop();
     console.log(chalk.green(`🟢 Project setup complete.`))
-    console.log(`- cd ${projectName}`);
-    console.log(`- npm run dev`);
+    if(!continueSetup){
+      console.log(`- cd ${projectName}`);
+      console.log(`- npm run dev`);
+    }
   } catch (error) {
     spinner.stop();
     console.log(chalk.red(`🔴 An error occurred: ${error.message}`));
