@@ -1,0 +1,26 @@
+.Conic_root__oK5Mw {
+    isolation: isolate;
+    contain: style
+}
+
+.Conic_conic__HBaxC {
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    position: relative;
+    z-index: -1;
+    width: 100%;
+    --conic-size: 600px;
+    height: var(--conic-size);
+    margin-bottom: calc(-1 * var(--conic-size));
+    --top: rgba(97,106,115,.12);
+    --bottom: transparent
+}
+
+.Conic_conic__HBaxC:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,transparent 70%,var(--color-bg-primary))
+}

@@ -1,0 +1,117 @@
+---
+title: CLI
+description: Easily set up and manage project using the CLI.
+---
+
+
+## Quick start: `init`
+
+Use the `init` command to initialize configuration and dependencies for a new project.
+
+```bash
+npm jhapali-ui init
+```
+
+You will be asked a few questions to configure your project:
+
+```text 
+                                             ..:::..
+                                        :!?5GBB#####BBG5J!^.
+                                    .!YB&&&#BBBBBBBBBB##@@&B57:
+                                :5&@@@@@@@&B5J??7??JY5GB&@@@&#GG#G~
+                               7&@@@@@@&P7~~~^^::..::^~7?YG&@@@#PP&5.
+                              Y@@@@@@&J:~7~:            .:!JP&@@@BY##~
+ ..   ...:^~~^:..:^^~~!7?YB@#BY::5~ ^5                         5@@@@@@@&##BP5YYJ7~^::::.:::...
+ ~7!~~7?JY5GGGPPPGGBBB#&&&&&BBGGGGGB#GPPPGGGGGGGGGGGGGGGGGGGGGPG##########BBGGGGPP5J7^^^^^^^^:.
+                               :P#@@@@@B?~^^:..       .:^75#@@@@@&!
+                                 7G#@@@@@&GY?!!~~~~!!?JPB&@@@@@#P^
+                                    .^?5G#&&@@##BBBB##&&&BGY!:
+                                        :~7JY5PGGGGGP5Y?!^.
+                                             ...::...
+
+? Enter your project name: (my-app)
+? Choose a framework: (Use arrow keys)
+❯ Next.js
+  React
+```
+
+### Next.js Options
+
+```bash
+? Choose a framework: (Use arrow keys)
+❯ Next.js
+  React
+? Would you like your code inside a src/ directory? (Use arrow keys)
+  no
+❯ yes
+? Would you like to use App Router? (recommended) (Use arrow keys)
+  no
+❯ yes
+? Which color would you like to use as base color? (Use arrow keys)
+❯ zinc
+  neutral
+  gray
+  salate
+  stone
+```
+
+### React Options
+```bash
+? Choose a framework:
+  Next.js
+❯ React
+? Which color would you like to use as base color? (Use arrow keys)
+❯ zinc
+  neutral
+  gray
+  salate
+  stone
+```
+### Options
+```bash
+Usage: jhapali-ui init [options] [components...]
+
+initialize your project and install dependencies
+
+Arguments:
+  components         the components to add or a url to the component.
+
+Options:
+  -n, --name        use define app name
+  -f, --framework   use define framework i.e next or react 
+  -d, --defaults    use default values i.e for next.js `src/` directory, `app-router` and `zinc`.
+  -h, --help        display help for command
+```
+
+## add
+
+The `add` command lets you easily configure and integrate popular packages into your project. Supported packages include Redux Toolkit, NextAuth, Prisma, and more.
+
+```bash
+npx jhapali-ui@latest add [packages]
+```
+
+You will be presented with a list of packages to choose from:
+
+```bash
+Which packages would you like to add? › Space to select. A to toggle all.
+Enter to submit.
+
+◯  Reduxtool kit
+◯  NextAuth
+◯  Prisma
+more commingsoon
+```
+
+### Options
+```bash
+Usage: jhapali-ui add [packages]
+
+initialize your project and install dependencies
+
+Options:
+  --prisma     use setup prisma in nextjs 
+  --nextauth   use setup nextauth in nextjs
+  --redux      use setup redux in you project
+  -h, --help        display help for command
+```

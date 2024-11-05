@@ -1,0 +1,48 @@
+---
+title: Next.js
+description: A quick guide to installing and configuring a Next project with ease.
+---
+
+<Steps>
+
+## Create project
+
+Run the `init` command to create a new Next.js project or to setup an existing one:
+
+```bash
+jhapali-ui init -n <project-name> -f next
+```
+
+<Callout className="mt-4">
+
+You can use the `-d` flag for defaults i.e `src/` directory, `app-router` and `zinc`.
+
+```bash
+jhapali-ui init -n <project-name> -f next -d
+```
+
+</Callout>
+
+### Configure project 
+ 
+On installation, you'll see the following prompts:
+
+```txt showLineNumbers
+Enter your project name: my-app
+Choose a framework: Next.js
+Would you like your code inside a src/ directory? yes
+Would you like to use App Router? (recommended) yes
+Which color would you like to use as base color? neutral
+```
+
+After the prompts, 
+create-next-app will create a folder with your project name and install the required dependencies.
+
+
+### That's it
+
+You can now start your project. without any delay.
+
+<FileTreeDemo/>
+
+</Steps>

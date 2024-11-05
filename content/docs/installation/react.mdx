@@ -1,0 +1,42 @@
+---
+title: React
+description: A quick guide to installing and configuring a React project with ease.
+---
+
+<Steps>
+
+### Create project
+
+By default, the CLI uses Vite to set up a new React application:
+
+```bash
+jhapali-ui init -n <project-name> -f react
+```
+
+<Callout className="mt-4">
+
+You can use the `-d` flag for defaults i.e `zinc`.
+
+```bash
+jhapali-ui init -n <project-name> -f react -d
+```
+
+</Callout>
+
+### Configure project 
+
+On installation, you'll see the following prompts:
+
+```txt showLineNumbers
+Enter your project name: my-app
+Choose a framework: React
+Which color would you like to use as base color? neutral
+```
+
+### That's it
+
+After configuration, the setup automatically creates a project folder with your chosen name, installs dependencies, and configures Tailwind CSS with Vite. No extra setup is needed—start coding right away!
+
+<ReactFileTreeDemo/>
+
+</Steps>

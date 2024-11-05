@@ -1,0 +1,67 @@
+[
+  {
+    "name": "sparklin",
+    "type": "registry:ui",
+    "dependencies": [
+      ""
+    ],
+    "files": [
+      {
+        "path": "global/sparklin.tsx",
+        "type": "registry:ui"
+      }
+    ]
+  },
+  {
+    "name": "form-generator",
+    "type": "registry:ui",
+    "dependencies": [
+      ""
+    ],
+    "files": [
+      {
+        "path": "global/form-generator.tsx",
+        "type": "registry:ui"
+      }
+    ]
+  },
+  {
+    "name": "glass-card",
+    "type": "registry:ui",
+    "dependencies": [
+      ""
+    ],
+    "files": [
+      {
+        "path": "global/glass-card.tsx",
+        "type": "registry:ui"
+      }
+    ]
+  },
+  {
+    "name": "gradient-background",
+    "type": "registry:ui",
+    "dependencies": [
+      ""
+    ],
+    "files": [
+      {
+        "path": "global/gradient-background.tsx",
+        "type": "registry:ui"
+      }
+    ]
+  },
+  {
+    "name": "animated-border",
+    "type": "registry:ui",
+    "dependencies": [
+      ""
+    ],
+    "files": [
+      {
+        "path": "global/animated-border.tsx",
+        "type": "registry:ui"
+      }
+    ]
+  }
+]
