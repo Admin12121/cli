@@ -11,6 +11,7 @@ const FormGeneraterDemo = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -35,6 +36,7 @@ const FormGeneraterDemo = () => {
             {...field}
             key={field.id}
             register={register}
+            watch={watch}
             errors={errors}
           />
         ))}
@@ -79,5 +81,6 @@ export const SIGN_UP_FORM: FormProps[] = [
     placeholder: "Password",
     name: "password",
     type: "password",
+    indicator: "inline",
   },
 ];
