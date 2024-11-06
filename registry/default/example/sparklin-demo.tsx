@@ -1,3 +1,4 @@
+"use client";
 import ClickSpark from "@/registry/default/global/sparklin";
 import React from "react";
 

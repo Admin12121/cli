@@ -4,11 +4,10 @@ import React, { useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface GradientBackgroundProps {
-    className?: string;
+  className?: string;
 }
 
-const GradientBackground = ({className}:GradientBackgroundProps) => {
-
+const GradientBackground = ({ className }: GradientBackgroundProps) => {
   useEffect(() => {
     let canvasEle = document.querySelector("#gradient-canvas");
 
@@ -759,7 +758,11 @@ const GradientBackground = ({className}:GradientBackgroundProps) => {
   }, []);
 
   return (
-    <canvas id="gradient-canvas" className={cn("", className)} data-transition-in></canvas>
+    <canvas
+      id="gradient-canvas"
+      className={cn("", className)}
+      data-transition-in
+    ></canvas>
   );
 };
 

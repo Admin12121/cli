@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorMessage } from "@hookform/error-message";
 import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from "@/components/ui/datepicker";
 import { Check, X, Info } from "lucide-react";
 import {
   HoverCard,
@@ -69,18 +70,20 @@ type PasswordStrength = {
 
 export type FormProps = {
   id: string;
-  type: "text" | "email" | "password" | "number";
-  inputType: "select" | "input" | "textarea" | "checkbox";
+  type?: "text" | "email" | "password" | "number" | "boolean";
+  inputType: "select" | "input" | "textarea" | "checkbox" | "date";
   options?: { value: string; label: string; id: string }[];
   label?: string;
   placeholder: string;
   name: string;
   indicator?: "default" | "strong" | "inline" | "hover";
+  required?: boolean;
+  disabled?: boolean;
 };
 
 export type FormGeneratorProps = {
-  type?: "text" | "email" | "password" | "number";
-  inputType: "select" | "input" | "textarea" | "checkbox";
+  type?: "text" | "email" | "password" | "number" | "boolean";
+  inputType: "select" | "input" | "textarea" | "checkbox" | "date";
   options?: { value: string; label: string; id: string }[];
   label?: string;
   placeholder: string;
@@ -90,6 +93,8 @@ export type FormGeneratorProps = {
   errors: FieldErrors<FieldValues>;
   lines?: number;
   indicator?: "default" | "strong" | "inline" | "hover";
+  required?: boolean;
+  disabled?: boolean;
 };
 
 export const FormGenerator = ({
@@ -103,7 +108,9 @@ export const FormGenerator = ({
   errors,
   type,
   lines,
-  indicator,
+  indicator = "default",
+  required = false,
+  disabled = false,
 }: FormGeneratorProps) => {
   const password = watch(name) || "";
   const calculateStrength = useMemo((): PasswordStrength => {
@@ -134,6 +141,7 @@ export const FormGenerator = ({
                 errors={errors}
                 indicator={indicator}
                 password={password}
+                required={required}
                 calculateStrength={calculateStrength}
               />
             );
@@ -149,6 +157,7 @@ export const FormGenerator = ({
                 errors={errors}
                 indicator={indicator}
                 password={password}
+                required={required}
                 calculateStrength={calculateStrength}
               />
             );
@@ -164,6 +173,7 @@ export const FormGenerator = ({
                 errors={errors}
                 indicator={indicator}
                 password={password}
+                required={required}
                 calculateStrength={calculateStrength}
               />
             );
@@ -175,19 +185,21 @@ export const FormGenerator = ({
         <Label className="flex flex-col gap-2" htmlFor={`input-${label}`}>
           {label && label}
           <Input
-            id={`input-${label}`}
+            id={`input-${name}`}
             type={type}
             placeholder={placeholder}
-            className="dark:bg-themeBlack dark:border-themeGray text-themeTextGray h-10"
-            {...register(name)}
+            className={
+              "dark:bg-themeBlack dark:border-themeGray text-themeTextGray h-10"
+            }
+            {...register(name, {
+              required: required && "This field is required",
+            })}
           />
           <ErrorMessage
             errors={errors}
             name={name}
             render={({ message }) => (
-              <p className="text-red-400 mt-2">
-                {message === "Required" ? "" : message}
-              </p>
+              <p className="text-red-400 mb-1">{message}</p>
             )}
           />
         </Label>
@@ -197,9 +209,11 @@ export const FormGenerator = ({
         <Label htmlFor={`select-${label}`} className="flex flex-col gap-2">
           {label && label}
           <select
-            id={`select-${label}`}
+            id={`select-${name}`}
             className="w-full bg-transparent border-[1px] p-3 rounded-lg"
-            {...register(name)}
+            {...register(name, {
+              required: required && "This field is required",
+            })}
           >
             {options?.length &&
               options.map((option) => (
@@ -216,7 +230,7 @@ export const FormGenerator = ({
             errors={errors}
             name={name}
             render={({ message }) => (
-              <p className="text-red-400 mt-2">
+              <p className="text-red-400 mb-1">
                 {message === "Required" ? "" : message}
               </p>
             )}
@@ -229,43 +243,56 @@ export const FormGenerator = ({
           {label && label}
           <Textarea
             className="bg-themeBlack border-themeGray text-themeTextGray"
-            id={`input-${label}`}
+            id={`input-${name}`}
             placeholder={placeholder}
-            {...register(name)}
+            {...register(name, {
+              required: required && "This field is required",
+            })}
             rows={lines}
           />
           <ErrorMessage
             errors={errors}
             name={name}
             render={({ message }) => (
-              <p className="text-red-400 mt-2">
-                {message === "Required" ? "" : message}
-              </p>
+              <p className="text-red-400 mb-1">{message}</p>
             )}
           />
         </Label>
       );
-    case "checkbox":
+    // to-do fix the State issue
+    // case "checkbox":
+    //   return (
+    //     <Label
+    //       className="flex items-center gap-2 py-1 px-[2px]"
+    //       htmlFor={`checkbox-${label}`}
+    //     >
+    //       <Checkbox
+    //         color="secondary"
+    //         className={`${errors[name] ? "text-red-400" : ""}`}
+    //         id={`checkbox-${name}`}
+    //         {...register(name)}
+    //       />
+    //       <p>{label && label}</p>
+    //     </Label>
+    //   );
+    case "date":
       return (
         <Label
           className="flex items-center gap-2"
           htmlFor={`checkbox-${label}`}
         >
-          <Checkbox
-            color="secondary"
-            id={`checkbox-${label}`}
-            {...register(name)}
-          />
           {label && label}
-          <ErrorMessage
-            errors={errors}
-            name={name}
-            render={({ message }) => (
-              <p className="text-red-400 mt-2">
-                {message === "Required" ? "" : message}
-              </p>
-            )}
+          <DatePicker
+            selected={watch(name)}
+            onSelect={(date) =>
+              register(name).onChange({ target: { value: date } })
+            }
+            {...register(name, {
+              required: required && "This field is required",
+            })}
+            placeholderText={placeholder}
           />
+          <p>{label && label}</p>
         </Label>
       );
     default:
@@ -280,6 +307,7 @@ const StrongPassword = ({
   register,
   name,
   errors,
+  required,
   password,
   calculateStrength,
 }: FormGeneratorProps & {
@@ -288,24 +316,26 @@ const StrongPassword = ({
 }) => {
   return (
     <div className="mb-1">
-      <Label className="flex flex-col gap-2" htmlFor={`input-${label}`}>
+      <Label className="flex flex-col gap-1" htmlFor={`input-${label}`}>
         {label && label}
         <Input
-          id={`input-${label}`}
+          id={`input-${name}`}
           type={type}
           value={password}
           placeholder={placeholder}
           aria-invalid={calculateStrength.score < 4}
           aria-describedby="password-strength"
           className="dark:bg-themeBlack dark:border-themeGray text-themeTextGray h-10"
-          {...register(name)}
+          {...register(name, {
+            required: required && "This field is required",
+          })}
         />
         <ErrorMessage
           errors={errors}
           name={name}
           render={({ message }) => (
-            <p className="text-red-400 mt-2">
-              {message === "Required" ? "" : message}
+            <p className="text-red-400">
+              {message || "This field is required"}
             </p>
           )}
         />
@@ -329,12 +359,12 @@ const StrongPassword = ({
         className="mb-2 text-sm font-medium flex justify-between"
       >
         <span>Must contain:</span>
-        <span>
+        <span className="text-xs text-themeTextGray">
           {
             STRENGTH_CONFIG.texts[
               Math.min(
                 calculateStrength.score,
-                4
+                4,
               ) as keyof typeof STRENGTH_CONFIG.texts
             ]
           }
@@ -372,6 +402,7 @@ const InlinePasswordInput = ({
   register,
   name,
   errors,
+  required,
   password,
   calculateStrength,
 }: FormGeneratorProps & {
@@ -380,58 +411,65 @@ const InlinePasswordInput = ({
 }) => {
   return (
     <Label className={`relative border-0`}>
-      <Input
-        id={`input-${label}`}
-        type={type}
-        value={password}
-        placeholder={placeholder}
-        aria-invalid={calculateStrength.score < 4}
-        aria-describedby="password-strength"
-        className={`dark:bg-themeBlack  text-themeTextGray h-10 ${STRENGTH_CONFIG.border[calculateStrength.score]}`}
-        {...register(name)}
-      />
-      <HoverCard openDelay={200}>
-        <HoverCardTrigger className="absolute right-2 top-[10px]">
-          <Info
-            size={20}
-            className={`cursor-pointer  ${
-              STRENGTH_CONFIG.border[calculateStrength.score]
-            } transition-all `}
-          />
-        </HoverCardTrigger>
-        <HoverCardContent className="bg-background">
-          <ul className="space-y-1.5" aria-label="Password requirements">
-            {calculateStrength.requirements.map((req, index) => (
-              <li key={index} className="flex items-center space-x-2">
-                {req.met ? (
-                  <Check size={16} className="text-emerald-500" />
-                ) : (
-                  <X size={16} className="text-muted-foreground/80" />
-                )}
-                <span
-                  className={`text-xs ${
-                    req.met ? "text-emerald-600" : "text-muted-foreground"
-                  }`}
-                >
-                  {req.text}
-                  <span className="sr-only">
-                    {req.met ? " - Requirement met" : " - Requirement not met"}
+      {label && label}
+      <span className="relative flex flex-col">
+        <Input
+          id={`input-${name}`}
+          type={type}
+          value={password}
+          placeholder={placeholder}
+          aria-invalid={calculateStrength.score < 4}
+          aria-describedby="password-strength"
+          className={`dark:bg-themeBlack  text-themeTextGray h-10 ${STRENGTH_CONFIG.border[calculateStrength.score]}`}
+          {...register(name, {
+            required: required && "This field is required",
+          })}
+        />
+        <HoverCard openDelay={200}>
+          <HoverCardTrigger className="absolute right-2 top-[10px]">
+            <Info
+              size={20}
+              className={`cursor-pointer  ${
+                STRENGTH_CONFIG.textcolors[calculateStrength.score]
+              } transition-all `}
+            />
+          </HoverCardTrigger>
+          <HoverCardContent className="bg-background">
+            <ul className="space-y-1.5" aria-label="Password requirements">
+              {calculateStrength.requirements.map((req, index) => (
+                <li key={index} className="flex items-center space-x-2">
+                  {req.met ? (
+                    <Check size={16} className="text-emerald-500" />
+                  ) : (
+                    <X size={16} className="text-muted-foreground/80" />
+                  )}
+                  <span
+                    className={`text-xs ${
+                      req.met ? "text-emerald-600" : "text-muted-foreground"
+                    }`}
+                  >
+                    {req.text}
+                    <span className="sr-only">
+                      {req.met
+                        ? " - Requirement met"
+                        : " - Requirement not met"}
+                    </span>
                   </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </HoverCardContent>
-      </HoverCard>
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ message }) => (
-          <p className="text-red-400 mt-2">
-            {message === "Required" ? "" : message}
-          </p>
-        )}
-      />
+                </li>
+              ))}
+            </ul>
+          </HoverCardContent>
+        </HoverCard>
+        <ErrorMessage
+          errors={errors}
+          name={name}
+          render={({ message }) => (
+            <p className="text-red-400 my-1">
+              {message === "Required" ? "" : message}
+            </p>
+          )}
+        />
+      </span>
     </Label>
   );
 };
@@ -443,6 +481,7 @@ const HoverPasswordInput = ({
   register,
   name,
   errors,
+  required,
   password,
   calculateStrength,
 }: FormGeneratorProps & {
@@ -452,58 +491,64 @@ const HoverPasswordInput = ({
   return (
     <Label className="flex flex-col gap-2 relative" htmlFor={`input-${label}`}>
       {label && label}
-      <Input
-        id={`input-${label}`}
-        type={type}
-        value={password}
-        placeholder={placeholder}
-        aria-invalid={calculateStrength.score < 4}
-        aria-describedby="password-strength"
-        className="dark:bg-themeBlack dark:border-themeGray text-themeTextGray h-10"
-        {...register(name)}
-      />
-      <HoverCard openDelay={200}>
-        <HoverCardTrigger className="absolute right-2 top-[10px]">
-          <Info
-            size={20}
-            className={`cursor-pointer  ${
-              STRENGTH_CONFIG.textcolors[calculateStrength.score]
-            } transition-all `}
-          />
-        </HoverCardTrigger>
-        <HoverCardContent className="bg-background">
-          <ul className="space-y-1.5" aria-label="Password requirements">
-            {calculateStrength.requirements.map((req, index) => (
-              <li key={index} className="flex items-center space-x-2">
-                {req.met ? (
-                  <Check size={16} className="text-emerald-500" />
-                ) : (
-                  <X size={16} className="text-muted-foreground/80" />
-                )}
-                <span
-                  className={`text-xs ${
-                    req.met ? "text-emerald-600" : "text-muted-foreground"
-                  }`}
-                >
-                  {req.text}
-                  <span className="sr-only">
-                    {req.met ? " - Requirement met" : " - Requirement not met"}
+      <span className="flex relative flex-col">
+        <Input
+          id={`input-${name}`}
+          type={type}
+          value={password}
+          placeholder={placeholder}
+          aria-invalid={calculateStrength.score < 4}
+          aria-describedby="password-strength"
+          className="dark:bg-themeBlack dark:border-themeGray text-themeTextGray h-10"
+          {...register(name, {
+            required: required && "This field is required",
+          })}
+        />
+        <HoverCard openDelay={200}>
+          <HoverCardTrigger className="absolute right-2 top-[10px]">
+            <Info
+              size={20}
+              className={`cursor-pointer  ${
+                STRENGTH_CONFIG.textcolors[calculateStrength.score]
+              } transition-all `}
+            />
+          </HoverCardTrigger>
+          <HoverCardContent className="bg-background">
+            <ul className="space-y-1.5" aria-label="Password requirements">
+              {calculateStrength.requirements.map((req, index) => (
+                <li key={index} className="flex items-center space-x-2">
+                  {req.met ? (
+                    <Check size={16} className="text-emerald-500" />
+                  ) : (
+                    <X size={16} className="text-muted-foreground/80" />
+                  )}
+                  <span
+                    className={`text-xs ${
+                      req.met ? "text-emerald-600" : "text-muted-foreground"
+                    }`}
+                  >
+                    {req.text}
+                    <span className="sr-only">
+                      {req.met
+                        ? " - Requirement met"
+                        : " - Requirement not met"}
+                    </span>
                   </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </HoverCardContent>
-      </HoverCard>
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ message }) => (
-          <p className="text-red-400 mt-2">
-            {message === "Required" ? "" : message}
-          </p>
-        )}
-      />
+                </li>
+              ))}
+            </ul>
+          </HoverCardContent>
+        </HoverCard>
+        <ErrorMessage
+          errors={errors}
+          name={name}
+          render={({ message }) => (
+            <p className="text-red-400 my-1">
+              {message === "Required" ? "" : message}
+            </p>
+          )}
+        />
+      </span>
     </Label>
   );
 };

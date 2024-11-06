@@ -6,6 +6,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+::selection {
+  color: black;          /* Text color when selected */
+  background-color: white; /* Background color of the selection */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -454,4 +459,8 @@ body {
   font-weight: 600;
   font-size: 1.125rem;
   letter-spacing: -0.01rem;
+}
+
+.bg-gradient-to-b {
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }

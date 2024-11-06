@@ -49,17 +49,6 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
-    "animated-border": {
-      name: "animated-border",
-      type: "registry:ui",
-      registryDependencies: undefined,
-      files: ["registry/default/global/animated-border.tsx"],
-      component: React.lazy(() => import("@/registry/default/global/animated-border.tsx")),
-      source: "",
-      category: "undefined",
-      subcategory: "undefined",
-      chunks: []
-    },
     "sparklin-demo": {
       name: "sparklin-demo",
       type: "registry:example",
@@ -93,12 +82,45 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
-    "animated-border-demo": {
-      name: "animated-border-demo",
+    "form-date-demo": {
+      name: "form-date-demo",
       type: "registry:example",
-      registryDependencies: ["animated-border"],
-      files: ["registry/default/example/animated-border-demo.tsx"],
-      component: React.lazy(() => import("@/registry/default/example/animated-border-demo.tsx")),
+      registryDependencies: ["form-generator"],
+      files: ["registry/default/example/form-date-demo.tsx"],
+      component: React.lazy(() => import("@/registry/default/example/form-date-demo.tsx")),
+      source: "",
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "form-input-demo": {
+      name: "form-input-demo",
+      type: "registry:example",
+      registryDependencies: ["form-generator"],
+      files: ["registry/default/example/form-input-demo.tsx"],
+      component: React.lazy(() => import("@/registry/default/example/form-input-demo.tsx")),
+      source: "",
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "form-password-variant-demo": {
+      name: "form-password-variant-demo",
+      type: "registry:example",
+      registryDependencies: ["form-generator"],
+      files: ["registry/default/example/form-password-variant-demo.tsx"],
+      component: React.lazy(() => import("@/registry/default/example/form-password-variant-demo.tsx")),
+      source: "",
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "form-select-demo": {
+      name: "form-select-demo",
+      type: "registry:example",
+      registryDependencies: ["form-generator"],
+      files: ["registry/default/example/form-select-demo.tsx"],
+      component: React.lazy(() => import("@/registry/default/example/form-select-demo.tsx")),
       source: "",
       category: "undefined",
       subcategory: "undefined",

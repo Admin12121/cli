@@ -60,6 +60,7 @@ export const SIGN_UP_FORM: FormProps[] = [
     placeholder: "First name",
     name: "firstname",
     type: "text",
+    required: true,
   },
   {
     id: "2",
@@ -67,6 +68,7 @@ export const SIGN_UP_FORM: FormProps[] = [
     placeholder: "Last name",
     name: "lastname",
     type: "text",
+    required: true,
   },
   {
     id: "3",
@@ -74,6 +76,7 @@ export const SIGN_UP_FORM: FormProps[] = [
     placeholder: "Email",
     name: "email",
     type: "email",
+    required: true,
   },
   {
     id: "4",
@@ -82,5 +85,6 @@ export const SIGN_UP_FORM: FormProps[] = [
     name: "password",
     type: "password",
     indicator: "inline",
+    required: true,
   },
 ];

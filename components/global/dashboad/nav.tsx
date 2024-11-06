@@ -73,7 +73,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                       <div
                         className={cn(
                           buttonVariants({
-                            variant: link.variant,
+                            variant: link.variant || 'ghost',
                             size: "icon",
                           }),
                           "h-9 w-9",
@@ -186,10 +186,8 @@ export function Nav({ links, isCollapsed }: NavProps) {
                   </SidebarMenu>
                 ) : (
                   <>
-                    <div className="w-full">
-                      <Link
-                        href={link.href || "#"}
-                        prefetch={link.prefetch ? link.prefetch : false}
+                    <SidebarMenu className="w-full">
+                      <SidebarMenuItem
                         className={cn(
                           buttonVariants({ variant: link.variant, size: "sm" }),
                           link.variant === "default" &&
@@ -210,7 +208,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                             {link.label}
                           </span>
                         )}
-                      </Link>
+                      </SidebarMenuItem>
                       {link.subLinks && link.subLinks.length > 0 && (
                         <SidebarMenuSub>
                           {link.subLinks.map((subLink, subIndex) => (
@@ -227,61 +225,13 @@ export function Nav({ links, isCollapsed }: NavProps) {
                           ))}
                         </SidebarMenuSub>
                       )}
-                    </div>
+                    </SidebarMenu>
                   </>
                 )}
               </div>
             )
           )}
         </nav>
-        {/* <nav className="w-full grid gap-1 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-          <SidebarGroup>
-            <SidebarMenu>
-              {links.map((link, index) => (
-                <SidebarMenuItem key={index}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={link.href || "#"}
-                      className={cn(
-                        buttonVariants({ variant: link.variant, size: "sm" }),
-                        link.variant === "default" &&
-                          "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                        "justify-start"
-                      )}
-                    >
-                      <link.icon className="mr-2 h-4 w-4" />
-                      {link.title}
-                      {link.label && (
-                        <span
-                          className={cn(
-                            "ml-auto",
-                            link.variant === "default" &&
-                              "text-background dark:text-white"
-                          )}
-                        >
-                          {link.label}
-                        </span>
-                      )}
-                    </Link>
-                  </SidebarMenuButton>
-                  {link.subLinks && link.subLinks.length > 0 && (
-                    <SidebarMenuSub>
-                      {link.subLinks.map((subLink, subIndex) => (
-                        <SidebarMenuSubItem key={subIndex}>
-                          <SidebarMenuButton asChild>
-                            <Link href={subLink.href || "#"} className="dark:hover:bg-zinc-800 flex items-center">
-                              {subLink.title}
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  )}
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        </nav> */}
       </div>
     </SidebarProvider>
   );

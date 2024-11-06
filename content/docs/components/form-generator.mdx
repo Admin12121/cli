@@ -1,9 +1,23 @@
 ---
 title: Form Generator
-description: A list that animates each item in sequence with a delay. Used to showcase notifications or events on your landing page.
+description: Building dynamic and reusable form with React Hook and Zod.
 author: admin12121
 published: true
 ---
+
+The `FormGenerator` component provides a flexible, dynamic solution for creating forms within React and Next.js applications. Designed for versatility and consistency, this component supports various input types and streamlines form creation across projects.
+
+In this guide, we’ll explore creating forms with FormGenerator component.
+
+## Features
+
+- **Dynamic Input Types**: Supports text, password, date, select, and more.
+- **Reusable**: Easily integrate into different parts of your application.
+- **Type Safety**: Built with TypeScript for type safety.
+- **Accessibility**: Includes ARIA attributes for better accessibility.
+- **Validation**: Integrates with `react-hook-form` for form validation.
+
+## Usage
 
 <ComponentPreview name="form-generator-demo" />
 
@@ -17,9 +31,14 @@ published: true
 </TabsList>
 <TabsContent value="cli">
 
+<Steps>
+
+### Command
+
 ```bash
 npx shadcn@latest add "https://magicui.design/r/animated-list"
 ```
+</Steps>
 
 </TabsContent>
 
@@ -27,7 +46,15 @@ npx shadcn@latest add "https://magicui.design/r/animated-list"
 
 <Steps>
 
+<Step>Install the following dependencies:</Step>
+
+```bash
+npm install @radix-ui/react-label @radix-ui/react-slot react-hook-form @hookform/resolvers zod
+```
+
 <Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="form-generator" />
 
 <Step>Update the import paths to match your project setup.</Step>
 
@@ -37,4 +64,39 @@ npx shadcn@latest add "https://magicui.design/r/animated-list"
 
 </Tabs>
 
+## Basic Example
 
+Here's a basic example of how to use the `FormGenerator` component:
+ 
+### Input
+<ComponentPreview name="form-input-demo" />
+
+### Password Variants
+
+<ComponentPreview name="form-password-variant-demo" />
+
+### Select 
+
+<ComponentPreview name="form-select-demo" />
+
+### Date
+
+<ComponentPreview name="form-date-demo" />
+
+## API Reference
+
+### FormGenerator
+
+| Prop        | Type   | Description                       | Default |
+| ----------  | ------ | --------------------------------- | ------- |
+| className   | string | The class name for the component  | ""      |
+| type        | string | The type of input (e.g., text, email, password) | ""      |
+| inputType   | string | The type of form element (e.g., input, select) | ""      |
+| placeholder | string | Placeholder text for the input    | ""      |
+| register    | any    | Function to register the input with `react-hook-form` | - |
+| name        | string | Name of the input field           | ""      |
+| options     | array  | Options for select inputs         | []      |
+| label       | string | Label for the input field         | ""      |
+| indicator   | string | Password strength indicator type  | "default" |
+| required    | boolean| Whether the field is required     | false   |
+| disabled    | boolean| Whether the field is disabled     | false   |

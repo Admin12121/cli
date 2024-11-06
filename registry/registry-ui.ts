@@ -25,10 +25,4 @@ export const ui: Registry = [
     dependencies: [""],
     files: ["global/gradient-background.tsx"],
   },
-  {
-    name: "animated-border",
-    type: "registry:ui",
-    dependencies: [""],
-    files: ["global/animated-border.tsx"],
-  },
 ];

@@ -50,18 +50,5 @@
         "type": "registry:ui"
       }
     ]
-  },
-  {
-    "name": "animated-border",
-    "type": "registry:ui",
-    "dependencies": [
-      ""
-    ],
-    "files": [
-      {
-        "path": "global/animated-border.tsx",
-        "type": "registry:ui"
-      }
-    ]
   }
 ]

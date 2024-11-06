@@ -20,9 +20,27 @@ export const examples: Registry = [
     files: ["example/gradient-background-demo.tsx"],
   },
   {
-    name: "animated-border-demo",
+    name: "form-date-demo",
     type: "registry:example",
-    registryDependencies: ["animated-border"],
-    files: ["example/animated-border-demo.tsx"],
+    registryDependencies: ["form-generator"],
+    files: ["example/form-date-demo.tsx"],
+  },
+  {
+    name: "form-input-demo",
+    type: "registry:example",
+    registryDependencies: ["form-generator"],
+    files: ["example/form-input-demo.tsx"],
+  },
+  {
+    name: "form-password-variant-demo",
+    type: "registry:example",
+    registryDependencies: ["form-generator"],
+    files: ["example/form-password-variant-demo.tsx"],
+  },
+  {
+    name: "form-select-demo",
+    type: "registry:example",
+    registryDependencies: ["form-generator"],
+    files: ["example/form-select-demo.tsx"],
   },
 ];
