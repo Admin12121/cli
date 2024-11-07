@@ -1,25 +1,19 @@
 "use client";
 
-import React, {
-  ReactNode,
-  Children,
-  isValidElement,
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-} from "react";
-import { motion } from "framer-motion";
+import * as React from "react"
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import Kbd from "@/components/ui/kbd";
 import { Slot } from "@radix-ui/react-slot";
+import { Input } from "@/components/ui/input";
+import Seperator from "@/components/global/seperator";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 import { VariantProps, cva } from "class-variance-authority";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronRight, LucideIcon, ChevronsUpDown } from "lucide-react";
+import { ChevronRight, LucideIcon, ChevronsUpDown, Search } from "lucide-react";
 
 import {
   ResizablePanel,
@@ -45,7 +39,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import Seperator from "@/components/global/seperator";
 
 interface SidebarProps {
   defaultLayout: number[] | undefined;
@@ -58,45 +51,44 @@ interface SidebarContextType {
   provider: boolean;
   isCollapsed: boolean;
   links?: SidebarNavProps["links"];
-  SetLinks?: any
+  SetLinks?: any;
 }
 
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+const SidebarContext = React.createContext<SidebarContextType | undefined>(undefined);
 
 const Sidebar = ({
   defaultLayout = [20, 80],
   navCollapsedSize,
   children,
 }: SidebarProps) => {
-  const [links, SetLinks] = useState<SidebarNavProps["links"]>()
+  const [links, SetLinks] = React.useState<SidebarNavProps["links"]>();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
-  const [maxSize, setMaxSize] = useState(20);
-  
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      let maxSizeValue;
-      if (width <= 1200 && width >= 768) {
-        maxSizeValue = 35 - ((width - 768) / (1200 - 768)) * 10;
-      } else if (width < 768) {
-        maxSizeValue = 20;
-      } else {
-        maxSizeValue = 20;
-      }
-      setMaxSize(maxSizeValue);
-    };
+  const [maxSize, setMaxSize] = React.useState(20);
+
+  const handleResize = React.useCallback(() => {
+    const width = window.innerWidth;
+    let maxSizeValue;
+    if (width <= 1200 && width >= 768) {
+      maxSizeValue = 35 - ((width - 768) / (1200 - 768)) * 10;
+    } else {
+      maxSizeValue = 20;
+    }
+    setMaxSize(maxSizeValue);
+  }, []);
+
+  React.useEffect(() => {
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [handleResize]);
 
-  const sidebarNav = useMemo(() => {
-    let nav: ReactNode = null;
-    const content: ReactNode[] = [];
-    Children.forEach(children, (child) => {
-      if (isValidElement(child) && child.type === SidebarNav) {
+  const sidebarNav = React.useMemo(() => {
+    let nav:React.ReactNode = null;
+    const content:React.ReactNode[] = [];
+    React.Children.forEach(children, (child) => {
+      if (React.isValidElement(child) && child.type === SidebarNav) {
         nav = child;
       } else {
         content.push(child);
@@ -105,10 +97,10 @@ const Sidebar = ({
     return { nav, content };
   }, [children]);
 
-
-
   return (
-    <SidebarContext.Provider value={{ provider: true, isCollapsed, links , SetLinks}}>
+    <SidebarContext.Provider
+      value={{ provider: true, isCollapsed, links, SetLinks }}
+    >
       <TooltipProvider delayDuration={0}>
         <ResizablePanelGroup
           direction="horizontal"
@@ -150,7 +142,10 @@ const Sidebar = ({
           {sidebarNav.nav && (
             <ResizableHandle className="bg-transparent w-2 max-md:hidden" />
           )}
-          <ResizablePanel>{sidebarNav.content}<Navigationbar/></ResizablePanel>
+          <ResizablePanel>
+            {sidebarNav.content}
+            <Navigationbar />
+          </ResizablePanel>
         </ResizablePanelGroup>
       </TooltipProvider>
     </SidebarContext.Provider>
@@ -175,46 +170,60 @@ interface SidebarNavProps {
     collapsible?: boolean;
     isactive?: boolean;
   }[];
-  children: ReactNode;
+  children:React.ReactNode;
   className?: string;
 }
 
 const SidebarNav = ({ links, children, className }: SidebarNavProps) => {
-  const context = useContext(SidebarContext);
+  const context = React.useContext(SidebarContext);
   const pathname = usePathname();
 
   if (!context) {
     throw new Error("SidebarNav must be used within a Sidebar component.");
   }
 
-  const { isCollapsed , SetLinks} = context;
+  const { isCollapsed, SetLinks } = context;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (context && links) {
-      SetLinks(links)
+      SetLinks(links);
     }
   }, [links, context]);
 
-  let headerContent: ReactNode = null;
-  let footerContent: ReactNode = null;
-  const mainContent: ReactNode[] = [];
+  const { headerContent, footerContent, SearchContent, mainContent } =
+    React.useMemo(() => {
+      let headerContent:React.ReactNode = null;
+      let footerContent:React.ReactNode = null;
+      let SearchContent:React.ReactNode = null;
+      const mainContent:React.ReactNode[] = [];
 
-  Children.forEach(children, (child) => {
-    if (isValidElement(child) && child.type === Header) {
-      headerContent = child;
-    } else if (isValidElement(child) && child.type === Footer) {
-      footerContent = child;
-    } else {
-      mainContent.push(child);
-    }
-  });
+      React.Children.forEach(children, (child) => {
+        if (React.isValidElement(child)) {
+          if (child.type === Header) {
+            headerContent = child;
+          } else if (child.type === Footer) {
+            footerContent = child;
+          } else if (child.type === CommandMenu) {
+            SearchContent = child;
+          } else {
+            mainContent.push(child);
+          }
+        }
+      });
 
-  const determineVariant = (href: string | undefined): "default" | "ghost" => {
-    return pathname === href ? "default" : "ghost";
-  };
+      return { headerContent, footerContent, SearchContent, mainContent };
+    }, [children]);
+
+  const determineVariant = React.useCallback(
+    (href: string | undefined): "default" | "ghost" => {
+      return pathname === href ? "default" : "ghost";
+    },
+    [pathname] 
+  );
   return (
     <div className="rounded-lg dark:bg-[#0C0C0C] h-full relative w-full">
-      {headerContent && headerContent}
+      {headerContent}
+      {SearchContent}
       <div
         data-collapsed={isCollapsed}
         className={cn(
@@ -535,7 +544,6 @@ const SidebarMenuButton = React.forwardRef<
     ref
   ) => {
     const Comp = asChild ? Slot : "button";
-    // const { isMobile, state } = useSidebar();
 
     const button = (
       <Comp
@@ -564,7 +572,6 @@ const SidebarMenuButton = React.forwardRef<
         <TooltipContent
           side="right"
           align="center"
-          //   hidden={state !== "collapsed" || isMobile}
           {...tooltip}
         />
       </Tooltip>
@@ -582,12 +589,12 @@ interface HeaderProps {
     href?: string;
     onClick?: () => void;
   }[];
-  children?: ReactNode;
+  children?:React.ReactNode;
 }
 
 const Header = ({ logo, label, children, menuItems }: HeaderProps) => {
   const router = useRouter();
-  const context = useContext(SidebarContext);
+  const context = React.useContext(SidebarContext);
 
   if (!context) {
     throw new Error("Header must be used within a Sidebar component.");
@@ -696,9 +703,9 @@ const Footer = ({
     href?: string;
     onClick?: () => void;
   }[];
-  children?: ReactNode;
+  children?:React.ReactNode;
 }) => {
-  const context = useContext(SidebarContext);
+  const context = React.useContext(SidebarContext);
   const router = useRouter();
 
   if (!context) {
@@ -793,173 +800,156 @@ const Footer = ({
   );
 };
 
-const container = {
-  hidden: { opacity: 0, y: 100 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      delayChildren: 0.3,
-      staggerChildren: 0.2,
-    },
-  },
-};
-
 const Navigationbar = () => {
-  const context = useContext(SidebarContext);
+  const context = React.useContext(SidebarContext);
   if (!context) {
     throw new Error("Navigationbar must be used within a Sidebar component.");
   }
+
   const { links } = context;
-  const [menu, setMenu] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
-
-  const handleMouseMove = (e: any) => {
-    for (const card of document.getElementsByClassName("navigationbar")) {
-      const rect = card.getBoundingClientRect(),
-        x = e.clientX - rect.left,
-        y = e.clientY - rect.top;
-      (card as HTMLElement).style.setProperty("--mouse-x", `${x}px`);
-      (card as HTMLElement).style.setProperty("--mouse-y", `${y}px`);
-    }
-  };
+  const [activeLinkIndex, setActiveLinkIndex] = React.useState<number | null>(null);
 
   const determineVariant = (href: string | undefined): "default" | "ghost" => {
     return pathname === href ? "default" : "ghost";
   };
 
+  const handleLinkClick = (index: number, link: any) => {
+    if (link.href) {
+      router.push(link.href);
+      setActiveLinkIndex(null);
+    } else if (link.subLinks) {
+      setActiveLinkIndex((prevIndex) => (prevIndex === index ? null : index));
+    }
+  };
+
+  return (
+    <span className="fixed w-full bottom-0 h-0 max-md:flex hidden  items-center justify-center z-50 ">
+      <div className="relative rounded-lg bottom-8 flex h-[45px] backdrop-blur-lg flex-col gap-1 justify-center items-center bg-neutral-900">
+        <AnimatePresence>
+          {activeLinkIndex !== null && (
+            <motion.div
+              className="absolute bottom-12 rounded-[inherit] backdrop-blur flex overflow-hidden bg-neutral-900 w-full"
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
+              transition={{ duration: 0.3 }}
+              layout
+            >
+              <span className="p-1 w-full">
+                {links && links[activeLinkIndex].subLinks && (
+                  <motion.span className="flex flex-col w-full">
+                    {links[activeLinkIndex].subLinks.map(
+                      (subLink, subIndex) => (
+                        <Button
+                          asChild
+                          className="justify-start"
+                          variant="ghost"
+                        >
+                          <Link href={subLink.href || "#"} key={subIndex}>
+                            {subLink.title}
+                          </Link>
+                        </Button>
+                      )
+                    )}
+                  </motion.span>
+                )}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div className="flex gap-1 p-1 rounded-lg relative h-[45px] backdrop-blur-lg justify-center items-center bg-neutral-900">
+          {links &&
+            links.map((link, index) => (
+              <Tooltip key={index} delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <div
+                    onClick={() => handleLinkClick(index, link)}
+                    className={cn(
+                      buttonVariants({
+                        variant: determineVariant(link.href),
+                        size: "icon",
+                      }),
+                      "h-9 w-9",
+                      determineVariant(link.href) === "default" &&
+                        "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                    )}
+                  >
+                    {link.icon && <link.icon className="h-4 w-4" />}
+                    <span className="sr-only">{link.title}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="flex items-center gap-4">
+                  {link.title}
+                  {link.label && (
+                    <span className="ml-auto text-muted-foreground">
+                      {link.label}
+                    </span>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            ))}
+        </div>
+      </div>
+    </span>
+  );
+};
+
+const CommandMenu = ({ children }: { children?: React.ReactNode }) => {
+  const context = React.useContext(SidebarContext);
+
+  if (!context) {
+    throw new Error("Header must be used within a Sidebar component.");
+  }
+
+  const { isCollapsed } = context;
   return (
     <>
-      <div className="w-full relative flex lg:hidden">
-        <motion.span className="w-full fixed bottom-0 h-0 flex items-center justify-center z-50">
-          <motion.div
-            className="navigationbar"
-            style={{
-              height: menu ? "335px" : "45px",
-              bottom: menu ? "180px" : "35px",
-              alignItems: menu ? "end" : "end",
-              transition: ".5s ease",
-            }}
-            transition={{ duration: 0.5 }}
-            onMouseMove={handleMouseMove}
+      {children ? (
+        children
+      ) : (
+        <div className="p-2">
+          <div
+            className={`relative dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white rounded-lg ${
+              isCollapsed ? "w-[36px] h-[36px]" : "w-full"
+            }`}
           >
-            <motion.div
-              style={{
-                height: menu ? "285px" : "0px",
-                padding: menu ? "25px" : "0px",
-                transition: ".5s ease",
-              }}
-              className="linksWrapper"
-            >
-              <motion.span
-                initial={{ opacity: 0 }}
-                variants={container}
-                animate={{
-                  opacity: menu ? 1 : 0,
-                  display: menu ? "flex" : "none",
-                }}
-                transition={{ delay: menu ? 0.5 : 0, duration: 1 }}
-                className="web_links"
-                style={{
-                  height: menu ? "200px" : "0px",
-                  width: menu ? "200px" : "0px",
-                  transition: ".5s ease",
-                }}
-              >
-                <p>Website</p>
-                <span>
-                  <Link href="/">Home</Link>
-                </span>
-                <span>
-                  <Link href="/about">About</Link>
-                </span>
-                <span>
-                  <Link href="/project">Projects</Link>
-                </span>
-                <span>
-                  <Link href="/contact">Contact</Link>
-                </span>
-              </motion.span>
-              <motion.span
-                initial={{ opacity: 0 }}
-                variants={container}
-                animate={{
-                  opacity: menu ? 1 : 0,
-                  display: menu ? "flex" : "none",
-                }}
-                transition={{ delay: menu ? 0.5 : 0, duration: 1 }}
-                className="web_links web_after_links"
-                style={{
-                  height: menu ? "200px" : "0px",
-                  width: menu ? "200px" : "0px",
-                  transition: ".5s ease",
-                }}
-              >
-                <p>Social</p>
-                <a href="https://www.instagram.com/vicky__taj/" target="_blank">
-                  Instagram
-                </a>
-                <a href="https://github.com/Admin12121" target="_blank">
-                  Github"
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/vickytajpuriya/"
-                  target="_blank"
+            {isCollapsed ? (
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <Kbd
+                    keys={["command"]}
+                    className="rounded-md absolute right-1 top-[4px] shadow-lg bg-neutral-900 text-white"
+                  ></Kbd>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="flex items-center gap-4"
                 >
-                  Linkedin"
-                </a>
-              </motion.span>
-            </motion.div>
-            <div className="navigation_wrapper !p-1 !rounded-lg">
-              {links &&
-                links.map((link, index) => (
-                  <Tooltip key={index} delayDuration={0}>
-                    <TooltipTrigger asChild>
-                      <div
-                        onClick={() => {
-                          if (link.href) {
-                            router.push(link.href);
-                            setMenu(false);
-                          } else if (link.subLinks) {
-                            setMenu((el) => !el);
-                          }
-                        }}
-                        className={cn(
-                          buttonVariants({
-                            variant: determineVariant(link.href),
-                            size: "icon",
-                          }),
-                          "h-9 w-9",
-                          determineVariant(link.href) === "default" &&
-                            "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
-                        )}
-                      >
-                        {link.icon && <link.icon className="h-4 w-4" />}
-                        <span className="sr-only">{link.title}</span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="top"
-                      className="flex items-center gap-4"
-                    >
-                      {link.title}
-                      {link.label && (
-                        <span className="ml-auto text-muted-foreground">
-                          {link.label}
-                        </span>
-                      )}
-                    </TooltipContent>
-                  </Tooltip>
-                ))}
-            </div>
-          </motion.div>
-        </motion.span>
-      </div>
+                  <span className="ml-auto text-muted-foreground">search</span>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <>
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search"
+                  className="pl-8 border-0 focus:outline-none focus-visible:ring-0"
+                />
+                <Kbd
+                  keys={["command"]}
+                  className="rounded-md absolute right-1 top-[4px] shadow-lg bg-neutral-900 text-white"
+                ></Kbd>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
-export { Sidebar, SidebarNav, Header, Footer };
+export { Sidebar, SidebarNav, Header, Footer, CommandMenu };
 
 export { SidebarContext };

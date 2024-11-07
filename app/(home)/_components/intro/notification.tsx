@@ -1,6 +1,6 @@
 const NotiFication = () => {
   return (
-    <div className="page_bentoGridB__uS8Oy Grid_b___vQi_">
+    <div className="page_bentoGridB__uS8Oy Grid_b___vQi_ max-md:!p-2">
       <h3 className="typography_bentoTitle__SNuj2">
         End-to-End Project Management
       </h3>

@@ -1,6 +1,6 @@
 const Skills = () => {
   return (
-    <div className="page_bentoGridA__KQ2Vv Grid_a__vY7M8">
+    <div className="page_bentoGridA__KQ2Vv Grid_a__vY7M8 max-md:!p-2">
       <h3 className="typography_bentoTitle__SNuj2">
         Crafting Solutions with Code
       </h3>

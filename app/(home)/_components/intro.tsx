@@ -5,7 +5,7 @@ import NotiFication from "./intro/notification";
 
 const Intro: React.FC = () => {
   return (
-    <div className="LayoutContent_root__ZBUya">
+    <div className="LayoutContent_root__ZBUya max-md:!px-0">
       <div className="page_bentoGrid__EhGwY Grid_root__iRfoa">
         <Skills/>
         <NotiFication/>

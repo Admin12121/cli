@@ -11,10 +11,16 @@ import {
   SunIcon,
 } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
+import Kbd from "@/components/ui/kbd";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Search } from "lucide-react";
 import { docsConfig } from "@/config/docs";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   CommandDialog,
   CommandEmpty,
@@ -25,7 +31,10 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 
-export function CommandMenu({ ...props }: DialogProps) {
+export function CommandMenu({
+  isCollapsed,
+  ...props
+}: DialogProps & { isCollapsed: boolean }) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const { setTheme } = useTheme();
@@ -58,20 +67,40 @@ export function CommandMenu({ ...props }: DialogProps) {
 
   return (
     <>
-      <Button
-        variant="outline"
-        className={cn(
-          "relative h-8 w-full justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-64",
-        )}
+    <div className="p-2">
+      <div
+        className={`relative dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white rounded-lg ${
+          isCollapsed ? "w-[36px] h-[36px]" : "w-full"
+        }`}
         onClick={() => setOpen(true)}
-        {...props}
       >
-        <span className="hidden lg:inline-flex">Search documentation...</span>
-        <span className="inline-flex lg:hidden">Search...</span>
-        <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
-      </Button>
+        {isCollapsed ? (
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <Kbd
+                keys={["command"]}
+                className="rounded-md absolute right-1 top-[4px] shadow-lg bg-neutral-900 text-white"
+              ></Kbd>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="flex items-center gap-4">
+              <span className="ml-auto text-muted-foreground">search</span>
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <>
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search"
+              className="pl-8 border-0 focus:outline-none focus-visible:ring-0"
+            />
+            <Kbd
+              keys={["command"]}
+              className="rounded-md absolute right-1 top-[4px] shadow-lg bg-neutral-900 text-white"
+            ></Kbd>
+          </>
+        )}
+      </div>
+    </div>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>

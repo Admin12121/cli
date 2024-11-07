@@ -1,14 +1,20 @@
 "use client";
 
 import React from "react";
-import { Sidebar, SidebarNav, Header, Footer } from "@/registry/default/global/sidebar1";
+import {
+  Sidebar,
+  SidebarNav,
+  Header,
+  Footer,
+  CommandMenu
+} from "@/registry/default/global/sidebar";
 import { List, Compass, House, Search, Network } from "lucide-react";
 
 export default function Page() {
-    const data = {
-        name: "Vicky Tajpuriya",
-        email: "vickytaj6459@gmail.com"
-    }
+  const data = {
+    name: "Vicky Tajpuriya",
+    email: "vickytaj6459@gmail.com",
+  };
   return (
     <div>
       <Sidebar
@@ -34,7 +40,46 @@ export default function Page() {
               title: "Installation",
               label: "9",
               collapsible: true,
-              isactive: true,
+              icon: Compass,
+              subLinks: [
+                { title: "CLI", href: "/workspace/sub1" },
+                { title: "Next", href: "/workspace/sub2" },
+              ],
+            },
+            {
+              title: "Installation",
+              label: "9",
+              collapsible: true,
+              icon: Compass,
+              subLinks: [
+                { title: "CLI", href: "/workspace/sub1" },
+                { title: "Next", href: "/sidebar" },
+              ],
+            },
+            {
+              title: "Installation",
+              label: "9",
+              collapsible: true,
+              icon: Compass,
+              subLinks: [
+                { title: "CLI", href: "/workspace/sub1" },
+                { title: "Next", href: "/workspace/sub2" },
+              ],
+            },
+            {
+              title: "Installation",
+              label: "9",
+              collapsible: true,
+              icon: Compass,
+              subLinks: [
+                { title: "CLI", href: "/workspace/sub1" },
+                { title: "Next", href: "/workspace/sub2" },
+              ],
+            },
+            {
+              title: "Installation",
+              label: "9",
+              collapsible: true,
               icon: Compass,
               subLinks: [
                 { title: "CLI", href: "/workspace/sub1" },
@@ -44,7 +89,6 @@ export default function Page() {
             {
               title: "Templates",
               label: "9",
-              isactive: true,
               icon: Network,
               subLinks: [
                 { title: "Portfolio", href: "/workspace/sub1" },
@@ -56,11 +100,12 @@ export default function Page() {
                 { title: "Portfolio", href: "/workspace/sub1" },
                 { title: "SaaS", href: "/workspace/sub2" },
               ],
-            }
+            },
           ]}
         >
-          <Header label="Welcome"/>
-          <Footer data={data}/>
+          <Header label="Welcome" />
+          <CommandMenu/>
+          <Footer data={data} />
         </SidebarNav>
         <div>
           <h1>Hello</h1>

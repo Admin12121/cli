@@ -2,8 +2,6 @@ import Navbar from "@/components/theme/navbar/navbar";
 import { Spotlight } from "@/components/global/spotlight";
 import Intro from "./_components/intro";
 import Hero from "./_components/home";
-import GradientBackground from "@/registry/default/global/gradient-background";
-import AnimatedBorder from "@/registry/default/global/animated-border";
 
 export default function Home() {
   return (
@@ -18,10 +16,6 @@ export default function Home() {
           {/* <AnimatedBorder/> */}
           <Intro />
         </div>
-        <footer className="h-[80vh] relative">
-        {/* <Seperator /> */}
-        <GradientBackground/>
-      </footer>
       </div>
     </>
   );
