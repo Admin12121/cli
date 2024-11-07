@@ -1,3 +1,4 @@
+import Navigationbar from "@/components/theme/navbar/navigationbar";
 import Doc from "./_components";
 
 const Page = async ({ params }: { params: { slug: string[] } }) => {

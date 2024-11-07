@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ModeToggle } from "../toogle-mode";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";

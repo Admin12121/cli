@@ -27,7 +27,7 @@ export default function Page() {
             {
               title: "Introduction",
               isactive: true,
-              icon: House,
+              icon: List,
               href: "/sidebar/introduction",
             },
             {
@@ -45,7 +45,7 @@ export default function Page() {
               title: "Templates",
               label: "9",
               isactive: true,
-              icon: Compass,
+              icon: Network,
               subLinks: [
                 { title: "Portfolio", href: "/workspace/sub1" },
                 { title: "SaaS", href: "/workspace/sub2" },
@@ -56,55 +56,7 @@ export default function Page() {
                 { title: "Portfolio", href: "/workspace/sub1" },
                 { title: "SaaS", href: "/workspace/sub2" },
               ],
-            },
-            {
-              title: "Templates",
-              label: "9",
-              isactive: true,
-              icon: Compass,
-              subLinks: [
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-              ],
-            },
-            {
-              title: "Templates",
-              label: "9",
-              isactive: true,
-              icon: Compass,
-              subLinks: [
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-              ],
-            },
-            {
-              title: "Templates",
-              label: "9",
-              isactive: true,
-              icon: Compass,
-              subLinks: [
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-                { title: "Portfolio", href: "/workspace/sub1" },
-                { title: "SaaS", href: "/workspace/sub2" },
-              ],
-            },
+            }
           ]}
         >
           <Header label="Welcome"/>
